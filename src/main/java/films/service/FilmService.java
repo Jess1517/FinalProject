@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import films.controller.model.FilmsData;
+import films.controller.model.GenreData;
 import films.controller.model.StudioData;
 import films.dao.FilmsDao;
 import films.dao.GenreDao;
@@ -20,6 +21,7 @@ import films.dao.StudioDao;
 import films.entity.Films;
 import films.entity.Genre;
 import films.entity.Studio;
+
 
 @Service
 public class FilmService {
@@ -127,10 +129,8 @@ public class FilmService {
 }
 
 	private void setFilmsFields(Films films, FilmsData filmsData) {
-		films.setFilmname(films.getFilmname());
-		films.setGenres(films.getGenres());
-		films.setStudio(films.getStudio());
-		films.setFilmsId(films.getFilmsId());
+		films.setFilmname(filmsData.getFilmname());
+		films.setFilmsId(filmsData.getFilmsId());
 		
 	}
 
@@ -165,5 +165,81 @@ public class FilmService {
 			
 			return new FilmsData(films); 
 	}
+		
+		@Transactional(readOnly = true)
+		public List<FilmsData> retrieveAllFilms() {
+			List<Films> films = filmsDao.findAll();
+			List<FilmsData> response = new LinkedList<>();
+			
+			for(Films film : films) {
+				response.add(new FilmsData(film)); 
+			}
+			
+			return response;
+		}
+
+		public Genre saveGenre(GenreData genreData) {
+			
+			return null;
+		}
+		
+		@Transactional(readOnly = false)
+		public GenreData saveGenre(Long filmsId, GenreData genreData) {
+			Films films = findFilmsById(filmsId); 
+			Long genreId = genreData.getGenreId();
+			Genre genre = findOrCreateGenre(filmsId,genreId);
+			copyGenreFields(genre, genreData);
+			genre.getFilms().add(films);
+			films.getGenres().add(genre);
+			
+			Genre dbGenre = genreDao.save(genre);
+			
+			return new GenreData(dbGenre); 
+			
+		}
+		
+		public Genre findGenreById(Long filmsId, Long genreId) {
+			Genre genre = genreDao.findById(genreId) 
+			.orElseThrow(() -> new NoSuchElementException(
+						"Genre with ID=" + genreId + " does not exist.")); 
+			boolean found = false; 
+			for(Films films : genre.getFilms()) {
+				if(films.getFilmsId() == filmsId) {
+					found = true;
+					break;
+		}
+				}
+			
+		
+		if(!found) { 
+			throw new IllegalArgumentException("Genre with ID=" + genreId + "is not a member of the films with ID=" + filmsId); 
+		}
+		return genre;
+			
+		}
+		
+		
+		public Genre findOrCreateGenre(Long filmsId, Long genreId) {
+			Genre genre; 
+			
+			       if(Objects.isNull(genreId)) {
+			    	   genre = new Genre();
+			       } else {
+			    	   genre = findGenreById(filmsId, genreId);
+			       }
+			    	   return genre;
+			       
+			       
+		}
+		
+		public void copyGenreFields(Genre genre, GenreData genreData) {
+			genre.setGenreId(genreData.getGenreId());
+			genre.setGenrename(genreData.getGenrename());
+			
+		}
+			
+				
+				
+		
  
 }

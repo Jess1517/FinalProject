@@ -17,12 +17,12 @@ public class FilmsData {
 	private Long filmsId;
 	private String filmname; 
 	private Set<String> genrenames = new HashSet<>(); 
-	private Studio studio;
+	
 
 public FilmsData(Films films) {
 	filmsId = films.getFilmsId();
 	filmname = films.getFilmname();
-	studio = films.getStudio();
+	
 	
 	for(Genre genre : films.getGenres()) {
 		genrenames.add(genre.getGenrename());
@@ -30,18 +30,18 @@ public FilmsData(Films films) {
 	
 }
 	
-@Data
-@NoArgsConstructor
-public static class FilmsStudio {
-	private Long studioId; 
-	private String studioname; 
-	
-public FilmsStudio(Studio studio) {
-	studioId = studio.getStudioId();
-	studioname = studio.getStudioname();
-	
-	}
-}
+////@Data
+//@NoArgsConstructor
+//public static class FilmsStudio {
+//	private Long studioId; 
+//	private String studioname; 
+//	
+//public FilmsStudio(Studio studio) {
+//	studioId = studio.getStudioId();
+//	studioname = studio.getStudioname();
+//	
+//	}
+//}
 	
 
 

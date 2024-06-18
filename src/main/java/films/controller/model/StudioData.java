@@ -33,17 +33,17 @@ public class StudioData {
 	static class FilmsResponse {
 	private Long filmsId;
 	private String filmname; 
-	private Set<String> genres = new HashSet<>(); 
-	private Studio studio; 
+	
+	
 	
 	
 	FilmsResponse(Films films) { 
 		filmsId = films.getFilmsId();
 		filmname = films.getFilmname(); 
-		
-		for(Genre genre : films.getGenres()) {
-			genres.add(genre.getGenrename()); 
-		}
+//		
+//		for(Genre genre : films.getGenres()) {
+//			genres.add(genre.getGenrename()); 
+//		}
 	}
 }
 

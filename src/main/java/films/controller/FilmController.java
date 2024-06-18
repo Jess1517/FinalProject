@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import films.controller.model.FilmsData;
+import films.controller.model.GenreData;
 import films.controller.model.StudioData;
+import films.entity.Genre;
 import films.service.FilmService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -76,7 +78,7 @@ public class FilmController {
 		return filmService.saveFilms(studioId, filmsData); 
 	}
 	
-	@PutMapping("/studio/{studioId}/film/{filmId}")
+	@PutMapping("/studio/{studioId}/film/{filmId}") 
 	public FilmsData updateFilms(@PathVariable Long studioId,
 			@PathVariable Long filmId,
 			@RequestBody FilmsData filmsData)  {
@@ -99,13 +101,35 @@ public class FilmController {
 				+ "was successful.");
 	}
 	
-	@GetMapping("/studio/{studioId}/film/{filmId}")
+	@GetMapping("/studio/{studioId}/film/{filmId}") 
 	public FilmsData retrieveFilmsById(@PathVariable Long studioId,
 			@PathVariable Long filmId) {
-		log.info("Retrieving silms with ID={} for studio with ID={}",
+		log.info("Retrieving films with ID={} for studio with ID={}",
 				filmId, studioId); 
 		
 		return filmService.retrieveFilmsById(studioId, filmId); 
 		
 	}
+	
+	@GetMapping("/films")
+	public List<FilmsData> retrieveAllFilms() {
+		log.info("Retrieve all films called.");
+		return filmService.retrieveAllFilms(); 
+	}
+	
+	@PostMapping("/film/{filmId}/genre")
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public GenreData insertGenre(@PathVariable Long filmId,
+			@RequestBody GenreData genreData)  {
+		
+		log.info("Creating film {} for genre with ID= {}", genreData,
+				filmId);
+		
+		return filmService.saveGenre(filmId, genreData); 
+	}
 }
+	
+	
+
+
+
